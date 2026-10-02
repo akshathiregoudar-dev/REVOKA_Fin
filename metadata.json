@@ -1,0 +1,7 @@
+{
+  "name": "Revoca Hub",
+  "description": "Dispatch and site-log style voice reminder console",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
