@@ -101,7 +101,18 @@ class ReminderAlarmService : Service() {
 
             val notification = buildForegroundNotification(reminder)
             startForeground(NOTIFICATION_ID, notification)
-
+            try {
+                val alertIntent = Intent(applicationContext, MainActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or
+                            Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                            Intent.FLAG_ACTIVITY_SINGLE_TOP or
+                            Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+                    putExtra(ReminderBroadcastReceiver.EXTRA_REMINDER_ID, reminder.id)
+                }
+                startActivity(alertIntent)
+            } catch (e: Exception) {
+                Log.e(TAG, "Popup launch failed: ${e.message}")
+            }
             startVibration()
             playReminderAudio(reminder)
         }
