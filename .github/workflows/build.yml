@@ -29,12 +29,11 @@ jobs:
 
       - name: Ensure Environment Files Exist
         run: |
-          if [ ! -f .env.example ]; then
-            echo "# Default env placeholders" > .env.example
-            echo "GEMINI_API_KEY=" >> .env.example
-            echo "ELEVENLABS_API_KEY=" >> .env.example
-          fi
-          touch .env
+          cat << 'EOF' > .env.example
+          GEMINI_API_KEY=default_gemini_key
+          ELEVENLABS_API_KEY=default_elevenlabs_key
+          EOF
+          cp .env.example .env
 
       - name: Generate Gradle Wrapper
         run: gradle wrapper --gradle-version 9.3.1
