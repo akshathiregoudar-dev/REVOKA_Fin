@@ -28,6 +28,17 @@ class BootReceiver : BroadcastReceiver() {
                     for (reminder in pendingReminders) {
                         ReminderScheduler.schedule(context.applicationContext, reminder)
                     }
+
+                    // Check for reminders that were missed while the phone was turned off
+                    val missedReminders = db.reminderDao().getMissedReminders(now)
+                    Log.d(TAG, "Found ${missedReminders.size} missed reminders that occurred while phone was off.")
+                    for (missed in missedReminders) {
+                        val triggerIntent = Intent(context, ReminderBroadcastReceiver::class.java).apply {
+                            action = ReminderBroadcastReceiver.ACTION_TRIGGER_REMINDER
+                            putExtra(ReminderBroadcastReceiver.EXTRA_REMINDER_ID, missed.id)
+                        }
+                        context.sendBroadcast(triggerIntent)
+                    }
                 } catch (e: Exception) {
                     Log.e(TAG, "Failed to reschedule reminders on boot", e)
                 } finally {
@@ -35,14 +46,6 @@ class BootReceiver : BroadcastReceiver() {
                 }
             }
         }
-        val missedReminders = db.reminderDao().getMissedReminders(now)
-    for (missed in missedReminders) {
-    val triggerIntent = Intent(context, ReminderBroadcastReceiver::class.java).apply {
-        action = ReminderBroadcastReceiver.ACTION_TRIGGER_REMINDER
-        putExtra(ReminderBroadcastReceiver.EXTRA_REMINDER_ID, missed.id)
-    }
-    context.sendBroadcast(triggerIntent)
-}
     }
 
     companion object {
