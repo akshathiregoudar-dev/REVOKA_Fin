@@ -35,6 +35,14 @@ class BootReceiver : BroadcastReceiver() {
                 }
             }
         }
+        val missedReminders = db.reminderDao().getMissedReminders(now)
+for (missed in missedReminders) {
+    val triggerIntent = Intent(context, ReminderBroadcastReceiver::class.java).apply {
+        action = ReminderBroadcastReceiver.ACTION_TRIGGER_REMINDER
+        putExtra(ReminderBroadcastReceiver.EXTRA_REMINDER_ID, missed.id)
+    }
+    context.sendBroadcast(triggerIntent)
+}
     }
 
     companion object {
