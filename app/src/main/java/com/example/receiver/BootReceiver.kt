@@ -13,9 +13,9 @@ import kotlinx.coroutines.launch
 class BootReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        val action = intent.action
-        if (action == Intent.ACTION_BOOT_COMPLETED || action == Intent.ACTION_MY_PACKAGE_REPLACED) {
-            Log.d(TAG, "Device rebooted or package replaced ($action). Rescheduling pending reminders...")
+        val receivedAction = intent.action
+        if (receivedAction == Intent.ACTION_BOOT_COMPLETED || receivedAction == Intent.ACTION_MY_PACKAGE_REPLACED) {
+            Log.d(TAG, "Device rebooted or package replaced ($receivedAction). Rescheduling pending reminders...")
 
             val pendingResult = goAsync()
             CoroutineScope(Dispatchers.IO).launch {
@@ -34,7 +34,7 @@ class BootReceiver : BroadcastReceiver() {
                     Log.d(TAG, "Found ${missedReminders.size} missed reminders that occurred while phone was off.")
                     for (missed in missedReminders) {
                         val triggerIntent = Intent(context, ReminderBroadcastReceiver::class.java).apply {
-                            action = ReminderBroadcastReceiver.ACTION_TRIGGER_REMINDER
+                            this.action = ReminderBroadcastReceiver.ACTION_TRIGGER_REMINDER
                             putExtra(ReminderBroadcastReceiver.EXTRA_REMINDER_ID, missed.id)
                         }
                         context.sendBroadcast(triggerIntent)
