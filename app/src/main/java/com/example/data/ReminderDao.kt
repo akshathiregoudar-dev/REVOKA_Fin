@@ -9,6 +9,9 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ReminderDao {
+    @Query("SELECT * FROM reminders WHERE isCompleted = 0 AND dueTimestamp <= :currentTime")
+    suspend fun getMissedReminders(currentTime: Long): List<ReminderEntity>
+
     @Query("SELECT * FROM reminders ORDER BY isCompleted ASC, dueTimestamp ASC")
     fun getAllReminders(): Flow<List<ReminderEntity>>
 
