@@ -27,7 +27,6 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
-      # Fix: Create .env.example and .env if missing so Secrets Plugin doesn't fail
       - name: Ensure Environment Files Exist
         run: |
           if [ ! -f .env.example ]; then
@@ -38,7 +37,7 @@ jobs:
           touch .env
 
       - name: Generate Gradle Wrapper
-        run: gradle wrapper --gradle-version 8.11.1
+        run: gradle wrapper --gradle-version 9.3.1
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
